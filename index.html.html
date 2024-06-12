@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I AM SORRY!</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #ff6f61;
+            animation: fadeIn 2s;
+        }
+        p {
+            animation: fadeIn 3s;
+        }
+        .button-container {
+            margin-top: 20px;
+            animation: slideIn 2s;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff6f61;
+            color: white;
+        }
+        button:hover {
+            transform: scale(1.1);
+            background-color: #ff8f81;
+        }
+        .hidden {
+            display: none;
+        }
+        .apology-note {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            margin-bottom: 20px;
+            animation: fadeIn 1s;
+        }
+        .coupon {
+            background-color: #ffffff;
+            border: 2px solid #ff6f61;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(100px); }
+            to { transform: translateY(0); }
+        }
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+        .reward-box {
+            width: 100px;
+            height: 100px;
+            background-color: #ff6f61;
+            border-radius: 10px;
+            margin: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+        .reward-box:hover {
+            transform: scale(1.1);
+            background-color: #ff8f81;
+        }
+        footer {
+            position: absolute;
+            bottom: 10px;
+            font-size: 12px;
+            color: #333;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <audio id="background-music" loop>
+        <source src="your_music_file.mp3" type="audio/mpeg">
+    </audio>
+
+    <div>
+        <h1>I AM SORRY!</h1>
+        <p>Did you forgive me?</p>
+        <div class="button-container">
+            <button id="yes-button">YES, I FORGIVE YOU</button>
+            <button id="no-button">NO, I DIDN'T</button>
+        </div>
+        <div id="apology-note" class="hidden">
+            <h2>My Apology</h2>
+            <p>Dear [Friend's Name],</p>
+            <p>I am really sorry for what I said. I didn't mean to hurt you, and I feel terrible about it. Please forgive me and let's make up. I promise to be a better friend.</p>
+            <p>Love, [Your Name]</p>
+        </div>
+        <div id="reward-quiz" class="hidden">
+            <h2>You got a reward!</h2>
+            <div class="reward-box" id="coupon1"></div>
+            <div class="reward-box" id="coupon2"></div>
+            <div class="reward-box" id="coupon3"></div>
+            <div class="reward-box" id="coupon4"></div>
+        </div>
+    </div>
+
+    <canvas id="confetti-canvas" class="confetti"></canvas>
+
+    <footer>Website designed with ♥ bysomeone who cares about you.</footer>
+
+    <script>
+        const noButton = document.getElementById('no-button');
+        const yesButton = document.getElementById('yes-button');
+        const apologyNote = document.getElementById('apology-note');
+        const backgroundMusic = document.getElementById('background-music');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const rewardQuiz = document.getElementById('reward-quiz');
+        const rewardBoxes = document.querySelectorAll('.reward-box');
+        const ctx = confettiCanvas.getContext('2d');
+
+        backgroundMusic.play();
+
+        noButton.addEventListener('mouseover', moveButton);
+        yesButton.addEventListener('click', () => {
+            apologyNote.classList.remove('hidden');
+            rewardQuiz.classList.remove('hidden');
+            document.querySelector('.button-container').classList.add('hidden');
+            document.querySelector('#reward-quiz').scrollIntoView({ behavior: 'smooth' });
+            startConfetti();
+        });
+        rewardBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                const coupon = document.createElement('div');
+                coupon.classList.add('coupon');
+                coupon.innerHTML = `
+                    <h3>YAYY! YOU GOT AN ONLY YES COUPON</h3>
+                    <p>That will work for 24 hours.</p>
+                    <p>You can use it only on Deepmalya, and he will have to say YES for 24 hours.</p>
+                    <p>TERMS AND CONDITIONS APPLY.</p>
+                `;
+                document.body.appendChild(coupon);
+            });
+        });
+
+        function moveButton() {
+            const x = Math.random() * (window.innerWidth - noButton.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noButton.offsetHeight);
+            noButton.style.position = 'absolute';
+            noButton.style.left = `${x}px`;
+            noButton.style.top = `${y}px`;
+        }
+
+        // Confetti animation
+        let confettiElements = [];
+
+        function startConfetti() {
+            for (let i = 0; i < 100; i++) {
+                confettiElements.push({
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                    size: Math.random() * 10 + 5,
+                    speed: Math.random() * 3 + 2,
+                    angle: Math.random() * 360
+                });
+            }
+            requestAnimationFrame(drawConfetti);
+        }
+
+        function drawConfetti() {
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            confettiElements.forEach((confetti, index) => {
+                confetti.y += confetti.speed;
+                confetti.angle += confetti.speed;
+                if (confetti.y > window.innerHeight) {
+                    confettiElements[index].y = -10;
+                }
+                ctx.fillStyle = confetti.color;
+                ctx.beginPath();
+                ctx.arc(confetti.x, confetti.y, confetti.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(drawConfetti);
+        }
+
+        // Resize confetti canvas
+        window.addEventListener('resize', () => {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        });
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+    </script>
+</body>
+</html>
+
